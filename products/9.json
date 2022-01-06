@@ -2,6 +2,6 @@
   "id": 9,
   "name": "Avocado",
   "description": "",
-  "image": "/products/avocado.png",
+  "image": "./products/avocado.png",
   "price": 6.4
 }
