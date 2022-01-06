@@ -1,0 +1,24 @@
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.build]
+command = "wasm-pack"
+args = ["build", "--dev", "--target", "web", "--out-name", "wasm", "--out-dir", "./static"]
+
+[tasks.export]
+command = "wasm-pack"
+args = ["build", "--release", "--target", "web", "--out-name", "wasm", "--out-dir", "./static"]
+
+[tasks.install]
+command = "cp"
+args = ["-r", "index.html", "styles.css", "data/products", "./static/"]
+
+[tasks.serve]
+command = "simple-http-server"
+args = ["-i", "./static/", "-p", "3000", "--nocache", "--try-file", "./static/index.html"]
