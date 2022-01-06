@@ -12,7 +12,6 @@ struct State {
 }
 
 pub struct ProductDetail {
-    props: Props,
     state: State,
 }
 
@@ -36,7 +35,6 @@ impl Component for ProductDetail {
         ctx.link().send_message(Msg::GetProduct);
 
         Self {
-            props: ctx.props().clone(),
             state: State {
                 product: None,
                 get_product_error: None,
@@ -48,7 +46,8 @@ impl Component for ProductDetail {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::GetProduct => {
-                let id = self.props.id;
+                let id = ctx.props().id;
+
                 self.state.get_product_loaded = false;
                 ctx.link().send_future(async move {
                     match get_product(id).await {
@@ -71,7 +70,7 @@ impl Component for ProductDetail {
         }
     }
 
-    fn view(&self, _ctx: &Context<Self>) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         if let Some(ref product) = self.state.product {
             html! {
                 <div class="product_detail_container">
@@ -79,7 +78,7 @@ impl Component for ProductDetail {
                     <div class="product_card_name">{&product.name}</div>
                     <div style="margin: 10px 0; line-height: 24px;">{&product.description}</div>
                     <div class="product_card_price">{"$"}{&product.price}</div>
-                    <AtcButton product={product.clone()} on_add_to_cart={self.props.on_add_to_cart.clone()} />
+                    <AtcButton product={ product.clone() } on_add_to_cart={ctx.props().on_add_to_cart.clone()} />
                 </div>
             }
         } else if !self.state.get_product_loaded {

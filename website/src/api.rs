@@ -4,7 +4,7 @@ use reqwasm::http::Request;
 use crate::types::Product;
 
 pub async fn get_products() -> Result<Vec<Product>, Error> {
-    let response = Request::get("/products/products.json").send().await?;
+    let response = Request::get("./products/products.json").send().await?;
     let products: Vec<Product> = response.json().await?;
     log::debug!("{:?}", products);
     Ok(products)
