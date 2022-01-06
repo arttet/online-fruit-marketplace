@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
@@ -18,10 +18,10 @@ jobs:
           version: 'latest'
       - uses: davidB/rust-cargo-make@v1
       - name: Build
-        working-directory: website
         run: |
           cargo make --cwd ./website export
           cargo make --cwd ./website install
+          rm ./website/static/.gitignore
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
