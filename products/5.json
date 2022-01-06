@@ -2,6 +2,6 @@
   "id": 5,
   "name": "Mango",
   "description": "",
-  "image": "./products/mango.png",
+  "image": "/products/mango.png",
   "price": 10.0
 }

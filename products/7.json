@@ -2,6 +2,6 @@
   "id": 7,
   "name": "Watermelon",
   "description": "",
-  "image": "./products/watermelon.png",
+  "image": "/products/watermelon.png",
   "price": 2.4
 }
