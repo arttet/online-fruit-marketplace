@@ -1,9 +1,9 @@
 use yew::prelude::{html, Component, Context, Html};
-use yew_router::prelude::{BrowserRouter, Switch};
+use yew_router::prelude::{BrowserRouter, Redirect, Switch};
 
 use crate::components::Navbar;
 use crate::pages::{Home, ProductDetail};
-use crate::routes::Route;
+use crate::routes::{Route, SubRoute};
 use crate::types::{CartProduct, Product};
 
 struct State {
@@ -53,10 +53,10 @@ impl Component for App {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
+        let cart_products = self.state.cart_products.clone();
         let handle_add_to_cart = ctx
             .link()
             .callback(|product: Product| Msg::AddToCart(product));
-        let cart_products = self.state.cart_products.clone();
 
         let switch = move |switch: &Route| -> Html {
             match switch {
@@ -68,6 +68,29 @@ impl Component for App {
                 }
                 Route::NotFound => {
                     html! { <h1>{ "404" }</h1> }
+                }
+                // FIXME: workaround for deploy
+                Route::SubRoute => {
+                    let cart_products = cart_products.clone();
+                    let handle_add_to_cart = handle_add_to_cart.clone();
+
+                    let sub_switch = move |switch: &SubRoute| -> Html {
+                        match switch {
+                            SubRoute::ProductDetail { id } => {
+                                html! {<ProductDetail id={ *id } on_add_to_cart={ handle_add_to_cart.clone() } />}
+                            }
+                            SubRoute::Home => {
+                                html! {<Home cart_products={ cart_products.clone() } on_add_to_cart={ handle_add_to_cart.clone() } />}
+                            }
+                            SubRoute::NotFound => {
+                                html! { <Redirect<Route> to={ Route::NotFound }/> }
+                            }
+                        }
+                    };
+
+                    html! {
+                        <Switch<SubRoute> render={ Switch::render(sub_switch) } />
+                    }
                 }
             }
         };
